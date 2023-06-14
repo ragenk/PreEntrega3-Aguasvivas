@@ -1,40 +1,90 @@
-let arrUsers = [];
+/* ------------------------------------
+PreEntrega3 - Rafael Aguasvivas
+Comision 43085
+------------------------------------ */
 
-function userSignup(){
-    let username = document.getElementById("username");
-    let password = document.getElementById("pwd");
+// Variables y Arrays
+const arrUsers = JSON.parse(localStorage.getItem("arrUsers")) || [];
+const arrAvatar = ['./img/avatar1.png','./img/avatar2.png','./img/avatar3.png','./img/avatar4.png']
+const username = document.getElementById("username");
+const password = document.getElementById("pwd");
+const container = document.querySelector('.container');
+const invalidUser = document.getElementById("invalidUser");
+const invalidPassword = document.getElementById("invalidPassword");
+const registroBtn = document.getElementById("registroBtn");
+const entrarBtn = document.getElementById("entrarBtn");
 
-    let user = {usuario:username.value, clave:password.value};
-    
-    arrUsers.push(user);
-
-    let arrJSON = JSON.stringify(arrUsers);
-
-    localStorage.setItem("arrUsers", arrJSON);
-}
-
-function userLogin(){
-    let usersDb = localStorage.getItem("arrUsers");
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("pwd").value;
-
-    usersDb = JSON.parse(usersDb);
-
-    for( let user of usersDb ){
-        if( user.usuario == username  && user.clave == password){
-            document.body.innerHTML = `<h1>Bienvenido/a al sistema: <span>${user.usuario}</span></h1>
-                                        <a href="index.html">Volver</a>`;
-            break
-        }
-        else{
-            document.body.innerHTML = `<h1>Usuario o password no encotrado: ${username}</h1>
-                                        <a href="index.html">Volver</a>`;
-        }
+// Funcion para generar un avatar random
+function randomAvatar() {
+    for (let i = 0; i < arrAvatar.length; i++) {
+        let avatar = Math.floor(Math.random()*arrAvatar.length);
+        return arrAvatar[avatar];
     }
 }
 
-let registroBtn = document.getElementById("registroBtn");
-let entrarBtn = document.getElementById("entrarBtn");
+// Funcion para dar de alta al usuario
+function userSignup() {
+    invalidUser.innerText = "";
+    invalidPassword.innerText = "";
+
+    // Condicional para validar datos introducidos
+    if ((!username.value || username.value === "")) {
+        invalidUser.innerText = "Introduce un usuario válido."
+    } else if ((!password.value || password.value === "")) {
+        invalidPassword.innerText = "Introduce una contraseña válida."
+    } else {
+        let user = {usuario:username.value, clave:password.value, avatar:randomAvatar()}; // Cuando llamamos a la funcion randomAvatar() se agrega un tercer atributo que es la imagen.
+    
+        arrUsers.push(user);
+
+        let arrJSON = JSON.stringify(arrUsers); // Convertimos nuestro Array en un JSON antes de guardarlo en el localStorage
+
+        localStorage.setItem("arrUsers", arrJSON);
+        
+        container.innerHTML = `<div>
+                                    <h2>Usuario <span>${username.value}</span> creado con exito.<br>Ya puedes entrar a la plataforma con tu usuario.</h2>
+                                </div>                
+                                <div>
+                                    <a href="index.html"><button class="btn">Volver</button></a>
+                                </div>`
+    }
+}
+
+// Funcion para entrar al sistema
+function userLogin() {
+    let usersDb = localStorage.getItem("arrUsers");
+
+    usersDb = JSON.parse(usersDb);
+
+    invalidUser.innerText = "";
+    invalidPassword.innerText = "";
+
+    for( let user of usersDb ){
+        if ((!username.value || username.value === "")) {
+            invalidUser.innerText = "Introduce un usuario válido."
+        } else if ((!password.value || password.value === "")) {
+            invalidPassword.innerText = "Introduce una contraseña válida."
+        } else if ( user.usuario == username.value  && user.clave == password.value){
+            container.innerHTML = `<div class="img-container">
+                                        <img src="${user.avatar}" alt="Avatar de usuario.">
+                                    </div>
+                                    <div>
+                                        <h2>Bienvenido/a al sistema: <span>${user.usuario}</span></h2>
+                                    </div>                
+                                    <div>
+                                        <a href="index.html"><button class="btn">Volver</button></a>
+                                    </div>`;
+            break
+        } else {
+            container.innerHTML = `<div>
+                                        <h2>Usuario o password no encotrados.</h2>
+                                    </div>                
+                                    <div>
+                                        <a href="index.html"><button class="btn">Volver</button></a>
+                                    </div>`;
+        }
+    }
+}
 
 registroBtn.addEventListener("click" , userSignup );
 entrarBtn.addEventListener("click" , userLogin);
