@@ -69,7 +69,7 @@ function userLogin() {
                                         <img src="${user.avatar}" alt="Avatar de usuario.">
                                     </div>
                                     <div>
-                                        <h2>Bienvenido/a al sistema: <span>${user.usuario}</span></h2>
+                                        <h2>Bienvenido/a a la plataforma: <span>${user.usuario}</span></h2>
                                     </div>                
                                     <div>
                                         <a href="index.html"><button class="btn">Volver</button></a>
@@ -77,8 +77,8 @@ function userLogin() {
             break
         } else {
             container.innerHTML = `<div>
-                                        <h2>Usuario o password no encotrados.</h2>
-                                    </div>                
+                                        <h2>Usuario o password no encontrados.</h2>
+                                    </div>
                                     <div>
                                         <a href="index.html"><button class="btn">Volver</button></a>
                                     </div>`;
